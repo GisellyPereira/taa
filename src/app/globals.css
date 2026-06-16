@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Paleta bruta */
+  --color-vinho-900: #670a07;
+  --color-vinho-800: #820a00;
+  --color-rosa-400: #d79596;
+  --color-rosa-200: #f2b8c0;
+  --color-teal-700: #067581;
+  --color-teal-500: #39949e;
+  --color-teal-300: #82c1c8;
+  --color-creme-100: #fdf6eb;
+  --color-creme-50: #fdfcf3;
+  --color-preto-900: #120f0a;
+
+  /* Superficies */
+  --color-bg: var(--color-creme-50);
+  --color-surface: var(--color-creme-100);
+  --color-surface-2: #ffffff;
+  --color-border: var(--color-rosa-200);
+
+  /* Texto */
+  --color-text: var(--color-preto-900);
+  --color-text-muted: #5a514a;
+  --color-text-inverse: var(--color-creme-50);
+
+  /* Marca / acao */
+  --color-primary: var(--color-vinho-800);
+  --color-primary-hover: var(--color-vinho-900);
+  --color-secondary: var(--color-teal-700);
+  --color-secondary-hover: var(--color-teal-500);
+  --color-accent: var(--color-rosa-400);
+  --color-danger: var(--color-vinho-800);
+  --color-success: var(--color-teal-700);
+
+  /* Tipografia */
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+  --font-sans: var(--font-poppins), system-ui, "Segoe UI", Roboto, sans-serif;
+
+  /* Bordas e sombras */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-md: 0 8px 24px rgba(18, 15, 10, 0.12);
+
+  /* Layout */
+  --container-max: 1320px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  body {
+    line-height: 1.5;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    line-height: 1.15;
+    font-weight: 700;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Container central */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
 }
