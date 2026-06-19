@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NoticiaDetalhe } from "@/components/noticias/NoticiaDetalhe";
 import { OutrasNoticias } from "@/components/noticias/OutrasNoticias";
+import { NoticiasMotion } from "@/components/noticias/NoticiasMotion";
 import { getAllSlugs, getNoticiaBySlug, noticias, toCard } from "@/lib/noticias";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -28,10 +29,10 @@ export default async function NoticiaPage({ params }: Params) {
   if (!noticia) notFound();
 
   return (
-    <>
+    <NoticiasMotion>
       <NoticiaDetalhe {...noticia} />
       {/* Sempre as 6 notícias na grade — não remove a que foi clicada. */}
       <OutrasNoticias items={noticias.map(toCard)} />
-    </>
+    </NoticiasMotion>
   );
 }

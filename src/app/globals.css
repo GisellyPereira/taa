@@ -80,3 +80,38 @@
   font-family: var(--font-serif);
   font-weight: 400;
 }
+
+/* Lenis (scroll suave) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* "Boca" recortada do envelope: semicírculo transparente na borda esquerda
+   (só desktop). Revela o que está atrás, como uma parte cortada do papel. */
+@media (min-width: 1024px) {
+  .envelope-mouth {
+    -webkit-mask-image: radial-gradient(
+      circle at left center,
+      transparent 0 2.75rem,
+      #000 2.75rem
+    );
+    mask-image: radial-gradient(
+      circle at left center,
+      transparent 0 2.75rem,
+      #000 2.75rem
+    );
+  }
+}

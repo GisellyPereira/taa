@@ -28,9 +28,12 @@ export function OutrasNoticias({
   });
 
   return (
-    <section className="mx-auto mt-16 max-w-6xl px-3 sm:mt-20 sm:px-6">
+    <section className="mx-auto mt-16 max-w-6xl px-3 pb-16 sm:mt-20 sm:px-6 sm:pb-20">
       {/* Título — Instrument Serif italic */}
-      <h2 className="serif text-center italic uppercase text-[clamp(1.5rem,4vw,2.5rem)] text-text">
+      <h2
+        data-anim="reveal"
+        className="serif text-center italic uppercase text-[clamp(1.5rem,4vw,2.5rem)] text-text"
+      >
         {title}
       </h2>
 
@@ -41,6 +44,7 @@ export function OutrasNoticias({
             {column.map((item, i) => (
               <Link
                 key={i}
+                data-anim="card"
                 href={item.href}
                 className="block bg-[#F4EDE1] p-2.5 transition-opacity hover:opacity-90 sm:p-3"
               >

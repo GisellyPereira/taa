@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Instrument_Serif, Poppins } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -36,9 +37,10 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${playfair.variable} ${instrument.variable} ${poppins.variable}`}
     >
-      <body className="min-h-screen flex flex-col overflow-x-hidden bg-bg text-text font-sans antialiased">
+      <body className="min-h-screen flex flex-col bg-bg text-text font-sans antialiased">
+        <SmoothScroll />
         <Header />
-        <main className="container flex-1 py-12">{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

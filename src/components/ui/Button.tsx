@@ -1,25 +1,22 @@
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "ghost" | "danger";
+type Variant = "vinho" | "rosa";
 
+// Formato comum a todos os botões — muda só a cor (variant) e o conteúdo.
 const base =
-  "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--radius-md)] text-base font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed";
+  "inline-flex cursor-pointer items-center justify-center rounded-md px-7 py-2.5 font-sans text-sm italic transition disabled:opacity-60 disabled:cursor-not-allowed";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-primary text-white enabled:hover:bg-primary-hover",
-  ghost: "bg-transparent text-text border border-border enabled:hover:bg-surface-2",
-  danger: "bg-danger text-white",
+  vinho: "bg-[#6E1313] text-white enabled:hover:bg-[#561010]",
+  rosa: "bg-rosa-200 text-primary enabled:hover:opacity-90",
 };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
-  loading?: boolean;
 };
 
 export function Button({
-  variant = "primary",
-  loading = false,
-  disabled = false,
+  variant = "vinho",
   type = "button",
   children,
   className = "",
@@ -29,10 +26,9 @@ export function Button({
     <button
       type={type}
       className={`${base} ${variants[variant]} ${className}`.trim()}
-      disabled={disabled || loading}
       {...rest}
     >
-      {loading ? "Carregando..." : children}
+      {children}
     </button>
   );
 }
