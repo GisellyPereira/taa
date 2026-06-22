@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Instrument_Serif, Poppins } from "next/font/google";
+import {
+  Playfair_Display,
+  Instrument_Serif,
+  Poppins,
+  Source_Sans_3,
+  Vina_Sans,
+} from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
@@ -24,6 +30,18 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+const vinaSans = Vina_Sans({
+  variable: "--font-vina",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Teatro Arthur Azevedo",
   description: "Site oficial do Teatro Arthur Azevedo",
@@ -35,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${playfair.variable} ${instrument.variable} ${poppins.variable}`}
+      className={`${playfair.variable} ${instrument.variable} ${poppins.variable} ${sourceSans.variable} ${vinaSans.variable}`}
     >
       <body className="min-h-screen flex flex-col bg-bg text-text font-sans antialiased">
         <SmoothScroll />

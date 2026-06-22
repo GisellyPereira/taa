@@ -3,11 +3,9 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import predio from "@/assets/images/image.png";
 import monograma from "@/assets/images/logo-vinho-hero.png";
-import lacre from "@/assets/images/lacre-dourado-hero.png";
-import moldura from "@/assets/images/moldura-hero.png";
-import ticket from "@/assets/images/ticket.png";
+import lacre from "@/assets/images/selo-hero.png";
 import chave from "@/assets/images/chave-hero.png";
 
 const useIsomorphicLayoutEffect =
@@ -17,21 +15,36 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useIsomorphicLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
     const root = sectionRef.current;
     if (!root) return;
 
-    const mm = gsap.matchMedia();
+    // Entrada roda UMA vez na montagem (sem ScrollTrigger). O Hero fica sempre
+    // no topo, então não precisa re-disparar — e assim trocar de aba/voltar não
+    // refaz nem bagunça o layout.
+    const ctx = gsap.context(() => {
+      const reveals = gsap.utils.toArray<HTMLElement>("[data-reveal]");
+      const pieces = gsap.utils.toArray<HTMLElement>("[data-piece]");
+      const bg = root.querySelector<HTMLElement>("[data-bg]");
 
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const reveals = gsap.utils.toArray<HTMLElement>("[data-reveal]", root);
-      const pieces = gsap.utils.toArray<HTMLElement>("[data-piece]", root);
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      // Sem animação: apenas revela.
+      if (reduce) {
+        gsap.set(
+          [...reveals, ...pieces, bg].filter(Boolean) as HTMLElement[],
+          { autoAlpha: 1 },
+        );
+        return;
+      }
+
       const vw = window.innerWidth || 1200;
       const vh = window.innerHeight || 800;
 
       // Estado inicial escondido (os elementos já vêm com opacity-0 no HTML).
-      // Distância de partida menor (~meia tela) p/ entrarem na área visível bem antes.
       gsap.set(reveals, { autoAlpha: 0, y: 40 });
+      if (bg) gsap.set(bg, { autoAlpha: 0 });
       pieces.forEach((el) =>
         gsap.set(el, {
           autoAlpha: 0,
@@ -41,23 +54,18 @@ export function Hero() {
         }),
       );
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: "top 80%",
-          toggleActions: "restart none none reset",
-        },
-      });
+      const tl = gsap.timeline();
 
-      // 1) Nome (monograma + kicker + título) revela primeiro, em cascata
-      tl.to(reveals, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.15,
-      })
-        // 2) Peças já começam a viajar (de fora) JUNTO com o nome — sem tempo morto.
+      // Fundo do prédio entra com fade leve
+      if (bg) tl.to(bg, { autoAlpha: 1, duration: 1.6, ease: "power2.out" }, 0);
+
+      // Nome (monograma + kicker + título) revela em cascata
+      tl.to(
+        reveals,
+        { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.15 },
+        0.1,
+      )
+        // Peças deslizam de fora (stop-motion) junto com o nome
         .to(
           pieces,
           {
@@ -71,94 +79,76 @@ export function Hero() {
           },
           0,
         );
+    }, root);
 
-      return () => {
-        gsap.set([...reveals, ...pieces], { clearProps: "all" });
-      };
-    });
-
-    // Sem animação: apenas revela (sobrescreve o opacity-0 do HTML).
-    mm.add("(prefers-reduced-motion: reduce)", () => {
-      const all = gsap.utils.toArray<HTMLElement>(
-        "[data-reveal], [data-piece]",
-        root,
-      );
-      gsap.set(all, { autoAlpha: 1 });
-    });
-
-    return () => mm.revert();
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="relative flex items-center justify-center min-h-[85vh] md:min-h-[clamp(620px,90vh,920px)] overflow-hidden"
+      className="relative isolate flex items-center overflow-hidden bg-bg h-[calc(100svh-56px)] lg:h-[calc(100svh-72px)]"
     >
-      {/* lacre — entra do canto superior-esquerdo */}
+      {/* Fundo: prédio do teatro (à direita, esmaecido) */}
       <Image
-        src={lacre}
+        src={predio}
         alt=""
         aria-hidden
-        data-piece
-        data-fx="-1"
-        data-fy="-0.7"
-        className="absolute z-0 opacity-0 select-none pointer-events-none top-[7%] left-[10%] md:top-[7%] md:left-[13%]"
+        data-bg
+        fill
+        priority
+        sizes="100vw"
+        className="-z-10 select-none object-cover object-center opacity-0"
       />
-      {/* moldura — entra de cima */}
-      <Image
-        src={moldura}
-        alt=""
-        aria-hidden
-        data-piece
-        data-fx="0.35"
-        data-fy="-1"
-        className="absolute z-0 opacity-0 select-none pointer-events-none top-[7%] right-[10%] md:top-[10%] md:right-[13%]"
-      />
-      {/* ticket — entra do canto inferior-esquerdo */}
-      <Image
-        src={ticket}
-        alt=""
-        aria-hidden
-        data-piece
-        data-fx="-0.9"
-        data-fy="0.9"
-        className="absolute z-0 opacity-0 select-none pointer-events-none bottom-[8%] left-[8%] md:bottom-[10%] md:left-[13%]"
-      />
-      {/* chave — entra do canto inferior-direito */}
+
+      {/* Chave — canto superior-esquerdo */}
       <Image
         src={chave}
         alt=""
         aria-hidden
         data-piece
-        data-fx="1"
-        data-fy="0.8"
-        className="absolute z-0 opacity-0 select-none pointer-events-none bottom-[8%] right-[8%] md:bottom-[10%] md:right-[13%]"
+        data-fx="-1"
+        data-fy="-0.8"
+        className="absolute z-0 select-none pointer-events-none opacity-0 top-[6%] left-[3%] w-[clamp(90px,12vw,170px)] md:top-[8%] md:left-[5%]"
+      />
+      {/* Selo de cera — canto inferior-esquerdo */}
+      <Image
+        src={lacre}
+        alt=""
+        aria-hidden
+        data-piece
+        data-fx="-0.9"
+        data-fy="0.9"
+        className="absolute z-0 select-none pointer-events-none opacity-0 bottom-0 left-0 w-[clamp(200px,24vw,380px)]"
       />
 
-      <div className="relative z-10 flex flex-col items-center text-center">
-        <Image
-          src={monograma}
-          alt="Teatro Arthur Azevedo"
-          data-reveal
-          className="w-[clamp(60px,6vw,90px)] h-auto mb-4 opacity-0"
-        />
-        <p
-          data-reveal
-          className="serif uppercase tracking-[0.4em] text-[clamp(0.7rem,1vw,0.95rem)] text-secondary mb-2 opacity-0"
-        >
-          Bem - vindo ao
-        </p>
-        <h1
-          data-reveal
-          className="flex flex-col items-center leading-[0.95] font-normal opacity-0"
-        >
-          <span className="font-display italic font-medium text-[clamp(3rem,8.5vw,8rem)] text-primary-hover">
-            Teatro Arthur
-          </span>
-          <span className="serif italic uppercase tracking-[0.02em] text-[clamp(3rem,8.5vw,8rem)] text-primary">
-            Azevedo
-          </span>
-        </h1>
+      {/* Conteúdo à esquerda */}
+      <div className="relative z-10 w-full pl-[clamp(2.5rem,9vw,11rem)] pr-4">
+        <div className="flex w-fit max-w-full flex-col items-start">
+          <Image
+            src={monograma}
+            alt="Teatro Arthur Azevedo"
+            data-reveal
+            className="h-auto w-[clamp(54px,5vw,84px)] self-center opacity-0 mb-3"
+          />
+          <p
+            data-reveal
+            className="serif self-center uppercase tracking-[0.4em] text-[clamp(0.72rem,1.4vw,1rem)] text-primary opacity-0 mb-3"
+          >
+            Bem - vindo ao
+          </p>
+          <h1
+            data-reveal
+            className="flex flex-col items-start text-left font-normal leading-[0.95] opacity-0"
+          >
+            <span className="font-display italic font-medium text-[clamp(3rem,8.5vw,8rem)] text-primary-hover">
+              Teatro Arthur
+            </span>
+            <span className="serif italic uppercase tracking-[0.02em] text-[clamp(3rem,8.5vw,8rem)] text-primary">
+              Azevedo
+            </span>
+          </h1>
+        </div>
       </div>
     </section>
   );

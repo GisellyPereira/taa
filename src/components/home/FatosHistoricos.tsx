@@ -44,19 +44,28 @@ export function FatosHistoricos() {
             trigger: sectionRef.current,
             start: "top bottom", // começa assim que a seção entra na viewport
             end: "bottom top", // termina quando a seção sai por cima
-            scrub: 1.2,
+            // scrub alto = a animação acompanha o scroll com mais inércia,
+            // dando sensação de abertura mais lenta/suave. Suba para ir + devagar.
+            scrub: 3,
             invalidateOnRefresh: true,
           },
         });
 
+        // Proporções da animação (em "unidades" de timeline). A abertura recebe
+        // mais corrida de scroll para abrir devagar; uma pequena pausa mantém a
+        // carta aberta no centro antes de fechar.
+        const OPEN = 2; // duração da abertura (antes era 0.5 padrão = rápido demais)
+        const HOLD = 0.6; // pausa com a carta aberta
+        const CLOSE = 1.2; // duração do fechamento
+
         // Abre (carta sai do envelope) — ápice no centro da viewport.
-        tl.to(cardRef.current, { xPercent: 0 }, 0)
-          .to(envRef.current, { xPercent: 0 }, 0)
-          .to(lacreRef.current, { x: -18, ease: "power1.inOut" }, 0)
+        tl.to(cardRef.current, { xPercent: 0, duration: OPEN }, 0)
+          .to(envRef.current, { xPercent: 0, duration: OPEN }, 0)
+          .to(lacreRef.current, { x: -18, duration: OPEN, ease: "power1.inOut" }, 0)
           // Fecha (carta volta para dentro, envelope recentraliza).
-          .to(cardRef.current, { xPercent: CARD_HIDDEN }, 1)
-          .to(envRef.current, { xPercent: ENV_CENTER }, 1)
-          .to(lacreRef.current, { x: 0, ease: "power1.inOut" }, 1);
+          .to(cardRef.current, { xPercent: CARD_HIDDEN, duration: CLOSE }, OPEN + HOLD)
+          .to(envRef.current, { xPercent: ENV_CENTER, duration: CLOSE }, OPEN + HOLD)
+          .to(lacreRef.current, { x: 0, duration: CLOSE, ease: "power1.inOut" }, OPEN + HOLD);
       },
     );
 

@@ -14,12 +14,12 @@ const VINHO = "#6E1313";
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-export function Contato({ svgMarkup }: { svgMarkup: string }) {
+export function Contato() {
   const sectionRef = useRef<HTMLElement>(null);
   const fundoRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const molduraRef = useRef<HTMLDivElement>(null);
-  const retratoRef = useRef<HTMLDivElement>(null);
+  const retratoRef = useRef<HTMLVideoElement>(null);
 
   useIsomorphicLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -74,62 +74,6 @@ export function Contato({ svgMarkup }: { svgMarkup: string }) {
     return () => mm.revert();
   }, []);
 
-  // Personagem animado: cabeça acena, braço/dedo gesticulam, olhos piscam
-  useIsomorphicLayoutEffect(() => {
-    if (!svgMarkup) return;
-    const scope = retratoRef.current;
-    if (!scope) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const ctx = gsap.context(() => {
-      gsap.to("#cabeca", {
-        rotation: 6,
-        duration: 1.8,
-        yoyo: true,
-        repeat: -1,
-        ease: "sine.inOut",
-        transformOrigin: "550px 575px",
-      });
-      gsap.to("#braco_levantado", {
-        rotation: -8,
-        duration: 1.5,
-        yoyo: true,
-        repeat: -1,
-        ease: "sine.inOut",
-        transformOrigin: "915px 790px",
-      });
-      gsap.to("#dedo", {
-        rotation: 13,
-        duration: 0.6,
-        yoyo: true,
-        repeat: -1,
-        ease: "power1.inOut",
-        transformOrigin: "1000px 605px",
-      });
-
-      // Piscar — fecha e abre as pálpebras (origem no topo), em intervalos variados
-      const lids = gsap.utils.toArray<SVGRectElement>(
-        "#palpebra_esquerda rect, #palpebra_direita rect",
-        scope,
-      );
-      if (lids.length) {
-        gsap.set(lids, { transformOrigin: "50% 0%", scaleY: 0 });
-        const piscar = () => {
-          gsap
-            .timeline({
-              onComplete: () =>
-                gsap.delayedCall(gsap.utils.random(2, 4), piscar),
-            })
-            .to(lids, { scaleY: 1, duration: 0.08, ease: "power2.in" })
-            .to(lids, { scaleY: 0, duration: 0.12, ease: "power2.out" }, "+=0.07");
-        };
-        gsap.delayedCall(gsap.utils.random(0.8, 2), piscar);
-      }
-    }, scope);
-
-    return () => ctx.revert();
-  }, [svgMarkup]);
-
   return (
     <section
       ref={sectionRef}
@@ -138,7 +82,7 @@ export function Contato({ svgMarkup }: { svgMarkup: string }) {
       {/* Letra decorativa vinho (entra pela esquerda) */}
       <div
         ref={fundoRef}
-        className="pointer-events-none absolute bottom-0 left-0 z-0 h-[92%] select-none"
+        className="pointer-events-none absolute top-0 left-0 z-0 h-full select-none"
       >
         <Image src={fundoTa} alt="" aria-hidden className="h-full w-auto" />
       </div>
@@ -206,14 +150,18 @@ export function Contato({ svgMarkup }: { svgMarkup: string }) {
           {/* Direita — moldura dourada (cai de cima) */}
           <div className="w-[clamp(200px,50vw,320px)] md:absolute md:right-6 md:top-1/3 md:w-[clamp(320px,36vw,480px)] md:-translate-y-1/2">
             <div ref={molduraRef} className="relative">
-              {/* Retrato do Arthur Azevedo (SVG inline) dentro do vão oval */}
+              {/* Retrato do Arthur Azevedo (vídeo) dentro do vão oval */}
               <div className="absolute inset-x-[17%] inset-y-[12%] overflow-hidden rounded-[50%] bg-white">
-                <div
+                <video
                   ref={retratoRef}
-                  role="img"
+                  src="/arthur-azevedo-taa.mp4"
                   aria-label="Arthur Azevedo"
-                  className="h-full w-full [&>svg]:mx-auto [&>svg]:mt-[5%] [&>svg]:block [&>svg]:h-auto [&>svg]:w-[82%]"
-                  dangerouslySetInnerHTML={{ __html: svgMarkup }}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="h-full w-full object-contain"
                 />
               </div>
 

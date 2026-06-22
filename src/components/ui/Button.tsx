@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "vinho" | "rosa";
+type Variant = "vinho" | "rosa" | "rosaSolido";
 
 // Formato comum a todos os botões — muda só a cor (variant) e o conteúdo.
 const base =
@@ -9,6 +9,7 @@ const base =
 const variants: Record<Variant, string> = {
   vinho: "bg-[#6E1313] text-white enabled:hover:bg-[#561010]",
   rosa: "bg-rosa-200 text-primary enabled:hover:opacity-90",
+  rosaSolido: "bg-rosa-200 text-white enabled:hover:bg-rosa-400",
 };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

@@ -37,6 +37,7 @@
   --font-display: var(--font-playfair), Georgia, serif;
   --font-serif: var(--font-instrument), Georgia, serif;
   --font-sans: var(--font-poppins), system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-source: var(--font-source-sans), system-ui, sans-serif;
 
   /* Bordas e sombras */
   --radius-sm: 6px;
