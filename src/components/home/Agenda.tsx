@@ -68,14 +68,14 @@ export function Agenda() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate overflow-hidden bg-[#FDFCF3] pt-16 sm:pt-20 lg:pt-24"
+      className="relative isolate overflow-hidden bg-[#FDFCF3] pt-16 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24"
     >
       {/* Florais decorativos de fundo: cada um ocupa metade da seção, colados,
           cobrindo a tela inteira. */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-1/2 select-none opacity-50">
+      <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-1/2 select-none opacity-80">
         <Image src={fundoLeft} alt="" aria-hidden fill sizes="50vw" className="object-cover" />
       </div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-1/2 select-none opacity-50">
+      <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-1/2 select-none opacity-80">
         <Image src={fundoRight} alt="" aria-hidden fill sizes="50vw" className="object-cover" />
       </div>
 

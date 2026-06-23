@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import predio from "@/assets/images/image.png";
+import predio from "@/assets/images/fundo-home.png";
 import monograma from "@/assets/images/logo-vinho-hero.png";
 import lacre from "@/assets/images/selo-hero.png";
 import chave from "@/assets/images/chave-hero.png";
@@ -33,9 +33,10 @@ export function Hero() {
       // Sem animação: apenas revela.
       if (reduce) {
         gsap.set(
-          [...reveals, ...pieces, bg].filter(Boolean) as HTMLElement[],
+          [...reveals, ...pieces].filter(Boolean) as HTMLElement[],
           { autoAlpha: 1 },
         );
+        if (bg) gsap.set(bg, { autoAlpha: 0.3 });
         return;
       }
 
@@ -57,7 +58,7 @@ export function Hero() {
       const tl = gsap.timeline();
 
       // Fundo do prédio entra com fade leve
-      if (bg) tl.to(bg, { autoAlpha: 1, duration: 1.6, ease: "power2.out" }, 0);
+      if (bg) tl.to(bg, { autoAlpha: 0.3, duration: 1.6, ease: "power2.out" }, 0);
 
       // Nome (monograma + kicker + título) revela em cascata
       tl.to(

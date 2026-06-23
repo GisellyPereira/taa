@@ -4,23 +4,20 @@ export const ROUTES = {
   noticias: "/noticias",
   agenda: "/agenda",
   acervo: "/acervo",
+  visita: "/visita",
+  contatos: "/contatos",
   rider: "/rider",
   galeria: "/galeria",
 } as const;
 
-export const NAV_LEFT = [
+export const NAV_ITEMS = [
   { label: "Início", to: ROUTES.home },
   { label: "O Teatro", to: ROUTES.oTeatro },
   { label: "Notícias", to: ROUTES.noticias },
   { label: "Agenda", to: ROUTES.agenda },
-];
-
-export const NAV_RIGHT = [
   { label: "Acervo", to: ROUTES.acervo },
-  { label: "Rider", to: ROUTES.rider },
-  { label: "Galeria", to: ROUTES.galeria },
+  { label: "Visita", to: ROUTES.visita },
+  { label: "Contatos", to: ROUTES.contatos },
 ];
-
-export const NAV_ITEMS = [...NAV_LEFT, ...NAV_RIGHT];
 
 export const LANGS = ["PT", "EN", "ES", "FR"] as const;

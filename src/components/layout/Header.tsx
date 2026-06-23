@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CaretDownIcon, ListIcon, XIcon } from "@phosphor-icons/react";
-import { LANGS, NAV_LEFT, NAV_RIGHT, ROUTES } from "@/lib/constants";
-import logoHeader from "@/assets/images/logo-header.svg";
+import { ListIcon, XIcon } from "@phosphor-icons/react";
+import { NAV_ITEMS, ROUTES } from "@/lib/constants";
+import logoHeader from "@/assets/images/logo-branca.png";
 
 const VINHO = "#820A00";
 const CREME = "#FDFCF3";
-
-const NAV_ITEMS_ALL = [...NAV_LEFT, ...NAV_RIGHT];
 
 function isActive(pathname: string, to: string) {
   return to === ROUTES.home ? pathname === "/" : pathname.startsWith(to);
@@ -19,26 +17,11 @@ function isActive(pathname: string, to: string) {
 
 export function Header() {
   const pathname = usePathname();
-  const [lang, setLang] = useState<(typeof LANGS)[number]>("PT");
-  const [langOpen, setLangOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const langRef = useRef<HTMLDivElement>(null);
-
-  // Fecha o seletor de idioma ao clicar fora
-  useEffect(() => {
-    if (!langOpen) return;
-    const onClick = (e: MouseEvent) => {
-      if (langRef.current && !langRef.current.contains(e.target as Node)) {
-        setLangOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, [langOpen]);
 
   const linkClass = (active: boolean) =>
-    `relative text-[0.82rem] tracking-wide transition-opacity hover:opacity-90 after:absolute after:inset-x-0 after:-bottom-1 after:h-[2px] after:origin-center after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 ${
-      active ? "after:scale-x-100" : ""
+    `text-[0.82rem] tracking-wide transition-opacity hover:opacity-90 ${
+      active ? "opacity-100" : ""
     }`;
 
   return (
@@ -46,82 +29,43 @@ export function Header() {
       className="font-source uppercase"
       style={{ backgroundColor: VINHO, color: CREME }}
     >
-      {/* Desktop — itens espalhados na largura do container (mesma da carta) */}
-      <div className="container hidden items-center justify-between pt-2 lg:flex">
-        {NAV_LEFT.map((item) => (
-          <Link
-            key={item.to}
-            href={item.to}
-            className={linkClass(isActive(pathname, item.to))}
-          >
-            {item.label}
-          </Link>
-        ))}
-
-        {/* Logo central */}
-        <Link href={ROUTES.home} aria-label="Página inicial" className="shrink-0">
+      {/* Desktop — logo à esquerda, itens centralizados na largura toda.
+          Grid [1fr_auto_1fr]: a coluna vazia à direita equilibra a logo
+          à esquerda, mantendo o nav (coluna central) sempre no centro. */}
+      <div className="container hidden items-center py-2 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        {/* Logo à esquerda */}
+        <Link
+          href={ROUTES.home}
+          aria-label="Página inicial"
+          className="shrink-0 justify-self-start"
+        >
           <Image
             src={logoHeader}
             alt="Teatro Arthur Azevedo"
             priority
-            className="h-16 w-auto"
+            className="h-12 w-auto"
           />
         </Link>
 
-        {NAV_RIGHT.map((item) => (
-          <Link
-            key={item.to}
-            href={item.to}
-            className={linkClass(isActive(pathname, item.to))}
-          >
-            {item.label}
-          </Link>
-        ))}
-
-        {/* Seletor de idioma */}
-        <div ref={langRef} className="relative">
-          <button
-            type="button"
-            onClick={() => setLangOpen((v) => !v)}
-            aria-haspopup="listbox"
-            aria-expanded={langOpen}
-            className="inline-flex items-center gap-1 text-[0.82rem] tracking-wide transition hover:opacity-80"
-          >
-            {lang}
-            <CaretDownIcon
-              size={12}
-              weight="bold"
-              className={`transition ${langOpen ? "rotate-180" : ""}`}
-            />
-          </button>
-          {langOpen && (
-            <ul
-              className="absolute left-1/2 top-full z-50 mt-2 min-w-[64px] -translate-x-1/2 overflow-hidden rounded-md text-center shadow-md"
-              style={{ backgroundColor: "#6E0A00", color: CREME }}
+        {/* Itens de navegação (centralizados) */}
+        <nav className="flex items-center justify-self-center gap-8 xl:gap-12">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.to}
+              href={item.to}
+              className={linkClass(isActive(pathname, item.to))}
             >
-              {LANGS.map((l) => (
-                <li key={l}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLang(l);
-                      setLangOpen(false);
-                    }}
-                    className={`block w-full px-4 py-2 text-center text-[0.82rem] transition hover:bg-black/15 ${
-                      l === lang ? "opacity-100" : "opacity-75"
-                    }`}
-                  >
-                    {l}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Coluna vazia para equilibrar (mantém o nav centralizado) */}
+        <span aria-hidden />
       </div>
 
       {/* Mobile — logo + hambúrguer */}
-      <div className="container flex items-center justify-between pt-2 lg:hidden">
+      <div className="container flex items-center justify-between py-2 lg:hidden">
         <Link href={ROUTES.home} aria-label="Página inicial">
           <Image
             src={logoHeader}
@@ -143,7 +87,7 @@ export function Header() {
       {/* Menu mobile */}
       {menuOpen && (
         <nav className="container flex flex-col gap-1 pb-4 lg:hidden">
-          {NAV_ITEMS_ALL.map((item) => (
+          {NAV_ITEMS.map((item) => (
             <Link
               key={item.to}
               href={item.to}
@@ -155,20 +99,6 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <div className="mt-3 flex gap-4">
-            {LANGS.map((l) => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => setLang(l)}
-                className={`text-[0.82rem] transition ${
-                  l === lang ? "opacity-100 underline" : "opacity-70"
-                }`}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
         </nav>
       )}
     </header>
